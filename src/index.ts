@@ -1,16 +1,12 @@
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { ChatOllama } from "langchain/chat_models/ollama";
-import type { Document } from "langchain/document";
 import { OllamaEmbeddings } from "langchain/embeddings/ollama";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { Chroma } from "langchain/vectorstores/chroma";
+import { CHROMA_DB_URL, MODEL, OLLAMA_URL } from "./config";
 
-const MODEL = "tinyllama";
-const OLLAMA_URL = "http://localhost:11434";
-const CHROMA_DB_URL = "http://localhost:8000";
-
-async function createChatWithDocumentsChain(documents: Document[], collectionName: string) {
+async function createChatWithDocumentsChain(collectionName: string) {
   const prompt = ChatPromptTemplate.fromTemplate(`Answer the following question based only on the provided context:
 
   <context>
@@ -53,7 +49,3 @@ async function createChatWithDocumentsChain(documents: Document[], collectionNam
 
   return retrievalChain;
 }
-
-// @todo #1 function to get Document from loader and emedding to chromadb
-// async function prepareData(): Promise<Document[]> {
-// }
