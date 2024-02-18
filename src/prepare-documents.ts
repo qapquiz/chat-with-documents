@@ -1,12 +1,18 @@
+import { ChromaClient } from "chromadb";
 import type { Document } from "langchain/document";
 import type { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { OllamaEmbeddings } from "langchain/embeddings/ollama";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { Chroma } from "langchain/vectorstores/chroma";
 import { CHROMA_DB_URL, MODEL } from "./config";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
+async function resetChroma() {
+  const chromaClient = new ChromaClient();
+  await chromaClient.reset();
+}
 
 function prepareLoader(): DirectoryLoader {
   return new DirectoryLoader(
@@ -18,7 +24,6 @@ function prepareLoader(): DirectoryLoader {
   );
 }
 
-// @todo #2 save to chroma db
 async function prepareDocuments(loader: BaseDocumentLoader, collectionName: string): Promise<Document<Record<string, any>>[]> {
   const docs = await loader.load();
   const splitter = new RecursiveCharacterTextSplitter();
@@ -28,6 +33,9 @@ async function prepareDocuments(loader: BaseDocumentLoader, collectionName: stri
     model: MODEL,
     maxConcurrency: 5,
   })
+
+  // reset Chroma before embedding documents
+  await resetChroma();
 
   try {
     await Chroma.fromDocuments(
