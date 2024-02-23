@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/react": "^18"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -12,6 +13,9 @@
     "@langchain/community": "^0.0.30",
     "chromadb": "^1.8.1",
     "effect": "^2.3.7",
-    "langchain": "^0.1.20"
-  }
+    "ink": "^4.4.1",
+    "langchain": "^0.1.20",
+    "react": "^18.2.0"
+  },
+  "packageManager": "yarn@4.1.0"
 }

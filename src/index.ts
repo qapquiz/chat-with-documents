@@ -7,7 +7,7 @@ import { Chroma } from "langchain/vectorstores/chroma";
 import { CHROMA_DB_URL, MODEL, OLLAMA_URL } from "./config";
 
 async function createChatWithDocumentsChain(collectionName: string) {
-  const prompt = ChatPromptTemplate.fromTemplate(`Answer the following question based only on the provided context:
+	const prompt = ChatPromptTemplate.fromTemplate(`Answer the following question based only on the provided context:
 
   <context>
     {context}
@@ -15,37 +15,37 @@ async function createChatWithDocumentsChain(collectionName: string) {
 
   Question: {input}`);
 
-  const chatModel = new ChatOllama({
-    baseUrl: OLLAMA_URL,
-    model: MODEL,
-  });
+	const chatModel = new ChatOllama({
+		baseUrl: OLLAMA_URL,
+		model: MODEL,
+	});
 
-  const embeddings = new OllamaEmbeddings({
-    model: MODEL,
-    maxConcurrency: 5,
-  });
+	const embeddings = new OllamaEmbeddings({
+		model: MODEL,
+		maxConcurrency: 5,
+	});
 
-  // create Chroamdb client with ollama embedding function
-  const vectorstore = new Chroma(
-    embeddings,
-    {
-      url: CHROMA_DB_URL,
-      collectionName: collectionName,
-    }
-  );
+	// create Chroamdb client with ollama embedding function
+	const vectorstore = new Chroma(
+		embeddings,
+		{
+			url: CHROMA_DB_URL,
+			collectionName: collectionName,
+		}
+	);
 
-  // create retriever from vectorstore for automatic retrieve when query
-  const retriever = vectorstore.asRetriever();
+	// create retriever from vectorstore for automatic retrieve when query
+	const retriever = vectorstore.asRetriever();
 
-  const documentChain = await createStuffDocumentsChain({
-      llm: chatModel,
-      prompt,
-  });
+	const documentChain = await createStuffDocumentsChain({
+		llm: chatModel,
+		prompt,
+	});
 
-  const retrievalChain = await createRetrievalChain({
-    combineDocsChain: documentChain,
-    retriever,
-  })
+	const retrievalChain = await createRetrievalChain({
+		combineDocsChain: documentChain,
+		retriever,
+	})
 
-  return retrievalChain;
+	return retrievalChain;
 }
